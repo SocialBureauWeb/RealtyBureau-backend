@@ -3,6 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./database/connectDB");
 const { router } = require("./routes");
+const authRoutes = require("./routes/authRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
 const errorHandler = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -45,6 +47,8 @@ app.use(
 )
 
 app.use('/', router);
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/auth", authRoutes);
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000;
