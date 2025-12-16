@@ -11,8 +11,8 @@ const app = express();
 connectDB()
 
 const allowedOrigins = [
-  // "https://www.socialbureau.in",
-  "http://localhost:5173",
+  "https://realty-bureau.vercel.app",
+  // "http://localhost:5173",
 ];
 console.log(allowedOrigins);
 
