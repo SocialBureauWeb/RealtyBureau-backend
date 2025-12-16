@@ -15,13 +15,11 @@ const allowedOrigins = [
   // "https://www.socialbureau.in",
   "http://localhost:5173",
 ];
-console.log(allowedOrigins);
 
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
-        console.log(origin);
         callback(null, origin || true);        
       } else {
         console.log(origin);

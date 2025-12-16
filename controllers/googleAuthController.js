@@ -44,7 +44,6 @@ console.log("t",ticket);
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-    console.log(user);
     res.json({
       success: true,
       message: "Google login successful",
@@ -100,7 +99,6 @@ exports.googleAuth = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-    console.log(user);
 
     res.json({
       success: true,
