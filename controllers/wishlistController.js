@@ -1,52 +1,89 @@
-const Wishlist = require("../models/Wishlist");
+// controllers/wishlistController.js
+const User = require('../models/User');
 
-exports.toggleWishlist = async (req, res) => {
+// GET /api/wishlist - Get user's wishlist
+exports.getWishlist = async (req, res) => {
   try {
-    const { userId, plotId } = req.body;
-
-    // Check exists
-    const existing = await Wishlist.findOne({ userId, plotId });
-
-    if (existing) {
-      await Wishlist.deleteOne({ _id: existing._id });
-      return res.json({ saved: false, message: "Removed from wishlist" });
+    const user = await User.findById(req.user.id).populate('wishlist');
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    await Wishlist.create({ userId, plotId });
-    res.json({ saved: true, message: "Added to wishlist" });
-
+    // Return wishlist as array of plot IDs
+    const wishlistIds = user.wishlist.map(plot => plot._id.toString());
+    
+    res.json({
+      success: true,
+      wishlist: wishlistIds
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error('Get wishlist error:', err);
+    res.status(500).json({ success: false, message: 'Failed to fetch wishlist' });
   }
 };
 
-exports.addWishlist = async (req, res) => {
+// POST /api/wishlist/add - Add plot to wishlist
+exports.addToWishlist = async (req, res) => {
   try {
     const { plotId } = req.body;
 
     if (!plotId) {
-      return res.status(400).json({ success: false, message: "plotId is required" });
+      return res.status(400).json({ success: false, message: 'Plot ID is required' });
     }
 
-    // Save item
-    const saved = await Wishlist.create({ plotId });
+    const user = await User.findById(req.user.id);
 
-    res.json({ success: true, saved });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Check if already in wishlist
+    if (user.wishlist.includes(plotId)) {
+      return res.status(400).json({ success: false, message: 'Already in wishlist' });
+    }
+
+    // Add to wishlist
+    user.wishlist.push(plotId);
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Added to wishlist',
+      wishlist: user.wishlist
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('Add to wishlist error:', err);
+    res.status(500).json({ success: false, message: 'Failed to add to wishlist' });
   }
 };
 
-
-exports.removeWishlist = async (req, res) => {
+// POST /api/wishlist/remove - Remove plot from wishlist
+exports.removeFromWishlist = async (req, res) => {
   try {
     const { plotId } = req.body;
 
-    const removed = await Wishlist.findOneAndDelete({ plotId });
+    if (!plotId) {
+      return res.status(400).json({ success: false, message: 'Plot ID is required' });
+    }
 
-    res.json({ success: true, removed });
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Remove from wishlist
+    user.wishlist = user.wishlist.filter(id => id.toString() !== plotId.toString());
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Removed from wishlist',
+      wishlist: user.wishlist
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('Remove from wishlist error:', err);
+    res.status(500).json({ success: false, message: 'Failed to remove from wishlist' });
   }
 };

@@ -2,8 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./database/connectDB");
-const { router } = require("./routes");
-const authRoutes = require("./routes/authRoutes");
+const router = require("./routes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const errorHandler = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
@@ -46,9 +45,10 @@ app.use(
     })
 )
 
+app.use('/api', wishlistRoutes);
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/google", require("./routes/googleAuthRoutes")); 
 app.use('/', router);
-app.use("/api/wishlist", wishlistRoutes);
-app.use("/api/auth", authRoutes);
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000;
