@@ -4,7 +4,7 @@ const router = express.Router();
 const {
   googleLogin,
   googleAuth
-} = require("../controllers/googleAuthController");
+} = require("../controllers/googleAuth");
 
 router.post("/login", googleLogin);
 router.post("/auth", googleAuth);

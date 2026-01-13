@@ -15,8 +15,16 @@ const plotSchema = new mongoose.Schema(
     },
 
     plotSize: {
-      type: Number, // e.g., in sq.ft / sq.yards / cents (frontend will indicate)
-      required: true,
+      value: {
+        type: Number,
+        required: true,
+      },
+      unit: {
+        type: String,
+        enum: ["sqft", "cent"],
+        default: "sqft",
+        required: true,
+      },
     },
 
     price: {
