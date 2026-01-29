@@ -78,9 +78,41 @@ const plotSchema = new mongoose.Schema(
     //   ref: "User",
     //   required: true, // Agent / Admin / Owner ID
     // },
+
+
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   { timestamps: true }
 );
+
+// Pre-validate hook to generate slug (runs before validation)
+plotSchema.pre("validate", async function (next) {
+  if (!this.slug && this.title) {
+    // Generate base slug
+    let slug = this.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "") // Remove special characters
+      .replace(/[\s_-]+/g, "-") // Replace spaces/underscores with hyphens
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+
+    // Ensure uniqueness
+    try {
+      const existingPlot = await mongoose.models.Plot.findOne({ slug: slug, _id: { $ne: this._id } });
+      if (existingPlot) {
+        slug = `${slug}-${Date.now()}`;
+      }
+      this.slug = slug;
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
 
 const Plot = mongoose.model("Plot", plotSchema);
 module.exports = Plot;

@@ -1,18 +1,22 @@
 // controllers/wishlistController.js
 const User = require('../models/User');
+const wishlist = require('../models/wishlist');
 
 // GET /api/wishlist - Get user's wishlist
 exports.getWishlist = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate('wishlist');
-    
+
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     // Return wishlist as array of plot IDs
-    const wishlistIds = user.wishlist.map(plot => plot._id.toString());
-    
+    // Filter out nulls (deleted plots) and map to IDs
+    const wishlistIds = user.wishlist
+      .filter(plot => plot !== null)
+      .map(plot => plot._id.toString());
+
     res.json({
       success: true,
       wishlist: wishlistIds

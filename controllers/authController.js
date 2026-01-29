@@ -11,13 +11,13 @@ exports.signup = async (req, res) => {
 
     if (!name || !email || !password)
       return res.status(400).json({ message: "All fields required" });
-    
-    const passwordRegex =  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#^-_])[A-Za-z\d@$!%*?&#^-_]{8,}$/;
-      
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#^-_])[A-Za-z\d@$!%*?&#^-_]{8,}$/;
+
     if (!passwordRegex.test(password)) {
       return res.status(400).json({ message: "Password must contain at least 8 characters, including one letter, one number, and one special character" });
     }
-    
+
 
     if (password !== confirmPassword)
       return res.status(400).json({ message: "Passwords do not match" });
@@ -47,7 +47,7 @@ exports.signup = async (req, res) => {
 };
 
 
-exports.loginUser =  async (req, res) => {
+exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
