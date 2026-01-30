@@ -43,6 +43,15 @@ app.use(
   })
 )
 
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'RealtyBureau Backend API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use('/api', wishlistRoutes);
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/google", require("./routes/googleAuthRoutes"));
@@ -50,4 +59,10 @@ app.use('/', router);
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Only start server if not in serverless environment (Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app;

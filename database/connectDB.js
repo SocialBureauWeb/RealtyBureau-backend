@@ -1,10 +1,24 @@
-const mongoose=require("mongoose")
-require("dotenv").config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-const connectDB=async()=>{
-    await mongoose.connect(process.env.MONGO_URI)
-      .then(() => console.log("MongoDB connected"))
-      .catch(err => console.error("MongoDB connection error:", err));
-}
+let isConnected = false;
 
-module.exports=connectDB
+const connectDB = async () => {
+  if (isConnected) {
+    console.log("Using existing MongoDB connection");
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+    });
+    isConnected = true;
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    throw err;
+  }
+};
+
+module.exports = connectDB;
