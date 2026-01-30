@@ -67,8 +67,10 @@ const plotController = {
             { slug: id }
           ]
         }).lean();
+        console.log("1st if", plot);
       } else {
         plot = await Plot.findOne({ slug: id }).lean();
+        console.log("2nd if", plot);
       }
 
       if (!plot) return sendError(res, 404, "Plot not found");
@@ -130,7 +132,9 @@ const plotController = {
         meta: { page: p, limit: l, total, pages: Math.ceil(total / l) },
         data: items,
       });
-    } catch (err) {
+
+    }
+    catch (err) {
       console.error("listPlots error", err);
       return sendError(res, 500, "Internal server error", err.message);
     }
