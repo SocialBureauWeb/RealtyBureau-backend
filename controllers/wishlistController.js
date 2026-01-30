@@ -1,6 +1,6 @@
 // controllers/wishlistController.js
 const User = require('../models/User');
-const wishlist = require('../models/wishlist');
+const wishlist = require('../models/Wishlist');
 
 // GET /api/wishlist - Get user's wishlist
 exports.getWishlist = async (req, res) => {
