@@ -51,8 +51,8 @@ app.get('/', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
 app.use('/api', wishlistRoutes);
+
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/google", require("./routes/googleAuthRoutes"));
 app.use('/', router);
