@@ -1,6 +1,6 @@
 // routes/wishlistRoutes.js
 const express = require('express');
-const router = express.Router();
+const wishlistRouter = express.Router();
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const {
   getWishlist,
@@ -9,8 +9,8 @@ const {
 } = require('../controllers/wishlistController');
 
 // Routes
-router.get('/wishlist', authMiddleware, getWishlist);
-router.post('/wishlist/add', authMiddleware, addToWishlist);
-router.post('/wishlist/remove', authMiddleware, removeFromWishlist);
+wishlistRouter.get('/wishlist', authMiddleware, getWishlist);
+wishlistRouter.post('/wishlist/add', authMiddleware, addToWishlist);
+wishlistRouter.post('/wishlist/remove', authMiddleware, removeFromWishlist);
 
-module.exports = router;
+module.exports = wishlistRouter;

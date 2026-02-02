@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./database/connectDB");
 const router = require("./routes");
-const wishlistRoutes = require("./routes/wishlistRoutes");
 const errorHandler = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -52,16 +51,17 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use('/api', wishlistRoutes);
+
+app.use('/', router);
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/google", require("./routes/googleAuthRoutes"));
-app.use('/', router);
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000;
 
 // Only start server if not in serverless environment (Vercel)
-if (process.env.NODE_ENV !== 'production') {
+// Render sets NODE_ENV=production, so we need to ensure we still listen if we are not on Vercel
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
