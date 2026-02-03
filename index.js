@@ -12,6 +12,7 @@ connectDB()
 
 const allowedOrigins = [
   "https://www.realtybureau.in",
+  "https://realtybureau.in",
   "http://localhost:5173",
 ];
 
@@ -22,7 +23,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
         callback(null, origin || true);
       } else {
-        console.log(origin);
+        console.log("Blocked by CORS:", origin);
         console.warn("Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
